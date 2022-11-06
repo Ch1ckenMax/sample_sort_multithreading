@@ -1,18 +1,8 @@
 #include <stdlib.h>
 #include "thread_info.h"
 
-struct threadInfo{
-    //start and end index of the sub sequence corresponds to this thread
-    long start;
-    long end;
-
-    //A pointer to an array for phase 4 (exchanging partitions)
-    int* mergedSubSequence;
-    long nextInsertPosition;
-};
-
-struct threadInfo* threadInfoConstructor(long start, long end){
-    struct threadInfo* temp = (struct threadInfo*) malloc(sizeof(struct threadInfo));
+struct ThreadInfo* threadInfoConstructor(long start, long end){
+    struct ThreadInfo* temp = (struct ThreadInfo*) malloc(sizeof(struct ThreadInfo));
     temp->start = start;
     temp->end = end;
     
@@ -24,7 +14,7 @@ struct threadInfo* threadInfoConstructor(long start, long end){
 }
 
 //Free the memory
-void threadInfoDestructor(struct threadInfo* info){
+void threadInfoDestructor(struct ThreadInfo* info){
     free(info->mergedSubSequence);
     free(info);
     return;
