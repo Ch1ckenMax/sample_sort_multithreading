@@ -12,6 +12,8 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <sys/time.h>
+#include "thread_info.h"
+#include "pivot_info.h"
 
 int checking(unsigned int *, long);
 int compare(const void *, const void *);
@@ -20,6 +22,9 @@ int compare(const void *, const void *);
 long size;  // size of the array
 int numOfWorkers = 4; //Number of workers. By default is 4
 unsigned int * intarr; // array of random integers
+struct threadInfo* temp;
+struct pivotInfo* temp2;
+
 
 int main (int argc, char **argv)
 {
@@ -67,6 +72,13 @@ int main (int argc, char **argv)
 	// replace qsort by your parallel sorting algorithm using pthread
 	qsort(intarr, size, sizeof(unsigned int), compare);
 
+	//Debug
+	//temp = threadInfoConstructor(0, size);
+	//temp2 = pivotInfoConstructor(size);
+	//threadInfoDestructor(temp);
+	//pivotInfoDestructor(temp2);
+
+
 	// measure the end time
 	gettimeofday(&end, NULL);
 	
@@ -98,3 +110,4 @@ int checking(unsigned int * list, long size) {
 	}
 	return 1;
 }
+

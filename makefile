@@ -1,6 +1,12 @@
-EXE=psort
+COMPILER = gcc
 
-all: $(EXE)
+FLAGS = -pthread
 
-psort: psort.c
-	gcc $< -o $@ 
+OBJ = psort.o thread_info.o pivot_info.o
+
+TARGET = psort
+
+all: $(TARGET)
+
+$(TARGET) : $(OBJ)
+	$(COMPILER) $(FLAGS) -o $(TARGET) $(OBJ)
