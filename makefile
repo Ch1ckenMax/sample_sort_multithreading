@@ -10,3 +10,6 @@ all: $(TARGET)
 
 $(TARGET) : $(OBJ)
 	$(COMPILER) $(FLAGS) -o $(TARGET) $(OBJ)
+
+seqsort : seqsort.c
+	gcc seqsort.c -o seqsort
