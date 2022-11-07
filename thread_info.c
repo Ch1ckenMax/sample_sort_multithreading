@@ -5,9 +5,8 @@ struct ThreadInfo* threadInfoConstructor(long start, long end){
     struct ThreadInfo* temp = (struct ThreadInfo*) malloc(sizeof(struct ThreadInfo));
     temp->start = start;
     temp->end = end;
-    
-    unsigned int* temp2 = (unsigned int*) malloc( (end - start)*sizeof(unsigned int));
-    temp->mergedSubSequence = temp2;
+    temp->mergedSubSequenceAllocated = 0;
+    temp->mergedSubSequenceLength = 0;
     temp->nextInsertPosition = 0;
 
     return temp;
@@ -15,7 +14,9 @@ struct ThreadInfo* threadInfoConstructor(long start, long end){
 
 //Free the memory
 void threadInfoDestructor(struct ThreadInfo* info){
-    free(info->mergedSubSequence);
+    if(info->mergedSubSequenceAllocated == 1){
+        free(info->mergedSubSequence);
+    }
     free(info);
     return;
 }

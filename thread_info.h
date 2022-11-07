@@ -7,8 +7,9 @@ struct ThreadInfo{
     long start;
     long end;
 
-    //A pointer to an array for phase 4 (exchanging partitions)
-    unsigned int* mergedSubSequence;
+    unsigned int* mergedSubSequence; //A pointer to an array for phase 4 (collected partitions)
+    int mergedSubSequenceAllocated; //Indicates if any memory from heap is allocated to the mergedSubSequence pointer
+    long mergedSubSequenceLength;
     long nextInsertPosition;
 };
 
