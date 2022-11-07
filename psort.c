@@ -4,8 +4,8 @@
 /*
 # Filename: psort.c
 # Student name and No.: Li Hoi Kit 3035745037
-# Development platform: Windows WSL Ubuntu
-# Remark:
+# Development platform: Windows WSL Ubuntu 20.04
+# Remark: Done everything
 */
 
 #include <stdio.h>
