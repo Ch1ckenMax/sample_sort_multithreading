@@ -60,9 +60,6 @@ int main (int argc, char **argv)
 		}
 	}
 
-	//Debug
-	printf("Number of workers: %d\n", numOfWorkers);
-
 	size = atol(argv[1]);
 	intarr = (unsigned int *)malloc(size*sizeof(unsigned int));
 	if (intarr == NULL) {perror("malloc"); exit(0); }
