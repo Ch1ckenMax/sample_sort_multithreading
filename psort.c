@@ -32,14 +32,13 @@ pthread_barrier_t phaseOneBarrier;
 //Condition Variables and mutex locks
 pthread_mutex_t mainThreadWaitMutex;
 pthread_cond_t mainThreadWaitCond;
+pthread_cond_t workerThreadWaitCond;
+pthread_mutex_t workerLock;
 int phase1FinishedThreads = 0;
 int phase2WaitingThreads = 0;
 int phase3_1WaitingThreads = 0;
 int phase3_2WaitingThreads = 0;
 int phase4WaitingThreads = 0;
-pthread_mutex_t workerThreadWaitMutex;
-pthread_cond_t workerThreadWaitCond;
-pthread_mutex_t workerLock;
 
 int main (int argc, char **argv)
 {
@@ -82,10 +81,6 @@ int main (int argc, char **argv)
 	
 	// measure the start time
 	gettimeofday(&start, NULL);
-	
-	// just call the qsort library
-	// replace qsort by your parallel sorting algorithm using pthread
-	//qsort(intarr, size, sizeof(unsigned int), compare);
 
 	//Initialization
 	threads = (pthread_t*) malloc(numOfWorkers * sizeof(pthread_t));
@@ -96,7 +91,6 @@ int main (int argc, char **argv)
 
 	pthread_mutex_init(&mainThreadWaitMutex,NULL);
 	pthread_cond_init(&mainThreadWaitCond,NULL);
-	pthread_mutex_init(&workerThreadWaitMutex,NULL);
 	pthread_cond_init(&workerThreadWaitCond,NULL);
 	pthread_mutex_init(&workerLock,NULL);
 
@@ -116,12 +110,8 @@ int main (int argc, char **argv)
 			printf("Error occured when creating worker threads!");
 			exit(1);
 		}
-
-		//Debug
-		printf("Thread %i is created!\n", i);
 	}
 
-	printf("Main thread before phase 1\n");
 
 	//Phase 1: Worker threads started, wait for the worker thread to finish
 
@@ -133,7 +123,6 @@ int main (int argc, char **argv)
 		phase1FinishedThreads = 0;
 		pthread_mutex_unlock(&mainThreadWaitMutex);
 
-	printf("Main thread after phase 1 before phase 2\n");
 
 	//Phase 2
 		//Gather samples
@@ -155,29 +144,12 @@ int main (int argc, char **argv)
 		pivotInfo->samplesAllocated = 0;
 
 
-
-	//Debug
-	for(int i = 0; i < size; i++){
-		printf("%d: %d, ",i , intarr[i]);
-		printf("\n");
-	}
-
-	printf("Pivots \n");
-	for(long i = 0; i < numOfWorkers - 1; i++){
-		
-		printf("%jd: %d, ",i , pivotInfo->pivots[i]);
-		printf("\n");
-	}
-	printf("\n");
-
 	//Phase 2 finishes. Wake the worker threads up for phase 3
 		pthread_mutex_lock(&mainThreadWaitMutex);
 		while(phase2WaitingThreads != numOfWorkers) //Wait for the worker threads to go into waiting for condition variable workerThreadWaitCond
 			pthread_cond_wait(&mainThreadWaitCond, &mainThreadWaitMutex);
 		pthread_cond_broadcast(&workerThreadWaitCond); //All worker threads asleep. LADS WAKE THE FUCK UP!!!
 		pthread_mutex_unlock(&mainThreadWaitMutex);
-
-	printf("Main thread phase 3-1\n");
 
 	//.........Worker threads working on the FIRST PART of phase 3 concurrently.............//
 
@@ -188,7 +160,6 @@ int main (int argc, char **argv)
 		pthread_cond_broadcast(&workerThreadWaitCond); //All worker threads asleep. LADS WAKE THE FUCK UP!!!
 		pthread_mutex_unlock(&mainThreadWaitMutex);
 	
-	printf("Main thread before phase 3-2\n");
 
 	//.........Worker threads working on the SECOND PART of phase 3 concurrently.............//
 
@@ -217,16 +188,6 @@ int main (int argc, char **argv)
 		}
 	}
 
-	for(int i = 0; i < numOfWorkers; i++){
-		printf("%d match? %jd, %jd yay\n", i, threadInfo[i]->mergedSubSequenceLength, threadInfo[i]->nextInsertPosition);
-		for(long j = 0; j < threadInfo[i]->mergedSubSequenceLength; j++){
-			printf("%jd: %d, ",j , threadInfo[i]->mergedSubSequence[j]);
-			printf("\n");
-		}
-		printf("P: %d,\n",pivotInfo->pivots[i]);
-		printf("\n");
-	}
-
 	//Phase 5: main thread merge the subsequence back together
 	long nextInsertPos = 0;
 	for(int i = 0; i < numOfWorkers; i++){
@@ -243,7 +204,6 @@ int main (int argc, char **argv)
 	pthread_barrier_destroy(&phaseOneBarrier);
 	pthread_mutex_destroy(&mainThreadWaitMutex);
 	pthread_cond_destroy(&mainThreadWaitCond);
-	pthread_mutex_destroy(&workerThreadWaitMutex);
 	pthread_cond_destroy(&workerThreadWaitCond);
 	pthread_mutex_destroy(&workerLock);
 	pivotInfoDestructor(pivotInfo);
@@ -288,8 +248,6 @@ void* workerThread(void* tInfo){
 	struct ThreadInfo* info = (struct ThreadInfo*) tInfo;
 	pthread_barrier_wait(&phaseOneBarrier); //Wait until all threads are created
 
-	printf("Thread %jd starts to run!\n", info->start);//Debug
-
 	//Phase 1: sort its own subsequence
 	qsort(&intarr[info->start], info->end - info->start, sizeof(unsigned int), compare);
 
@@ -297,7 +255,6 @@ void* workerThread(void* tInfo){
 	pthread_mutex_lock(&mainThreadWaitMutex);
 	pthread_cond_signal(&mainThreadWaitCond);
 	phase1FinishedThreads++;
-	printf("Thread %jd haha!%d\n", info->start, phase1FinishedThreads);
 	pthread_mutex_unlock(&mainThreadWaitMutex);
 
 	//.............Main thread Working on Phase 2..................//
@@ -306,7 +263,6 @@ void* workerThread(void* tInfo){
 	pthread_mutex_lock(&mainThreadWaitMutex);
 	pthread_cond_signal(&mainThreadWaitCond);
 	phase2WaitingThreads++; //Indicates that this thread is ready to go to sleep and wake up together with other threads again in the cond_wait for workerThreadWaitCond
-	printf("Thread %jd dada!%d\n", info->start, phase2WaitingThreads);
 	pthread_cond_wait(&workerThreadWaitCond, &mainThreadWaitMutex); //Sleep and wait for main thread to say its good to go to phase 3
 	pthread_mutex_unlock(&mainThreadWaitMutex);
 
@@ -326,21 +282,18 @@ void* workerThread(void* tInfo){
 	//Signals that this worker thread has finished its FIRST part in phase 3. Tells the main thread about it and waits for main thread to tell this worker thread that it can proceed to second part of phase 3
 	pthread_mutex_lock(&mainThreadWaitMutex);
 	pthread_cond_signal(&mainThreadWaitCond);
-	phase3_1WaitingThreads++; //Indicates that this thread is ready to go to sleep and wake up together with other threads again in the cond_wait for workerThreadWaitCond
-	printf("Thread %jd dada2!%d\n", info->start, phase2WaitingThreads);
-	pthread_cond_wait(&workerThreadWaitCond, &mainThreadWaitMutex); //Sleep and wait for main thread to say its good to go to phase 3
+	phase3_1WaitingThreads++;
+	pthread_cond_wait(&workerThreadWaitCond, &mainThreadWaitMutex);
 	pthread_mutex_unlock(&mainThreadWaitMutex);
 
 	//second part in phase 3: allocating space for subsequences
 	info->mergedSubSequence = (unsigned int*) malloc(info->mergedSubSequenceLength*sizeof(unsigned int));
 	info->mergedSubSequenceAllocated = 1;
 
-	//Signals that this worker thread has finished its part in phase 3. Tells the main thread about it and waits for main thread to tell this worker thread that it can proceed to second part of phase 4
 	pthread_mutex_lock(&mainThreadWaitMutex);
 	pthread_cond_signal(&mainThreadWaitCond);
-	phase3_2WaitingThreads++; //Indicates that this thread is ready to go to sleep and wake up together with other threads again in the cond_wait for workerThreadWaitCond
-	printf("Thread %jd dada3!%d\n", info->start, phase2WaitingThreads);
-	pthread_cond_wait(&workerThreadWaitCond, &mainThreadWaitMutex); //Sleep and wait for main thread to say its good to go to phase 3
+	phase3_2WaitingThreads++;
+	pthread_cond_wait(&workerThreadWaitCond, &mainThreadWaitMutex);
 	pthread_mutex_unlock(&mainThreadWaitMutex);
 
 	//first part in phase 4: Put the partitions to the correct subSequence
@@ -357,14 +310,11 @@ void* workerThread(void* tInfo){
 
 	pthread_mutex_lock(&mainThreadWaitMutex);
 	pthread_cond_signal(&mainThreadWaitCond);
-	phase4WaitingThreads++; //Indicates that this thread is ready to go to sleep and wake up together with other threads again in the cond_wait for workerThreadWaitCond
-	printf("Thread %jd dada4!%d\n", info->start, phase2WaitingThreads);
-	pthread_cond_wait(&workerThreadWaitCond, &mainThreadWaitMutex); //Sleep and wait for main thread to say its good to go to phase 3
+	phase4WaitingThreads++;
+	pthread_cond_wait(&workerThreadWaitCond, &mainThreadWaitMutex);
 	pthread_mutex_unlock(&mainThreadWaitMutex);
 
 	////second part in phase 4: sort the sub sequences
 	qsort(info->mergedSubSequence, info->nextInsertPosition, sizeof(unsigned int), compare);
-
-	printf("Thread %jd is now out of phase 4!\n", info->start);
 
 }
