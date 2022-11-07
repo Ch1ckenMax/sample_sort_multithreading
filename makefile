@@ -2,7 +2,7 @@ COMPILER = gcc
 
 FLAGS = -pthread
 
-OBJ = psort.o thread_info.o pivot_info.o
+OBJ = psort_3035745037.o thread_info.o pivot_info.o
 
 TARGET = psort
 

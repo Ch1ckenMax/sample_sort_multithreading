@@ -2,7 +2,7 @@
 // The sequential version of the sorting using qsort
 
 /*
-# Filename: psort.c
+# Filename: psort_3035745037.c
 # Student name and No.: Li Hoi Kit 3035745037
 # Development platform: Windows WSL Ubuntu 20.04
 # Remark: Done everything
