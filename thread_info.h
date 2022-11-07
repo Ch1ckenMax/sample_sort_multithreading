@@ -8,7 +8,7 @@ struct ThreadInfo{
     long end;
 
     //A pointer to an array for phase 4 (exchanging partitions)
-    int* mergedSubSequence;
+    unsigned int* mergedSubSequence;
     long nextInsertPosition;
 };
 

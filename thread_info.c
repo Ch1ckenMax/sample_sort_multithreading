@@ -6,7 +6,7 @@ struct ThreadInfo* threadInfoConstructor(long start, long end){
     temp->start = start;
     temp->end = end;
     
-    int* temp2 = (int*) malloc( (end - start)*sizeof(int));
+    unsigned int* temp2 = (unsigned int*) malloc( (end - start)*sizeof(unsigned int));
     temp->mergedSubSequence = temp2;
     temp->nextInsertPosition = 0;
 

@@ -2,20 +2,25 @@
 #include "pivot_info.h"
 
 //Allocates memory for a pivotInfo, initialize the values properly and return the pointer to the pivotInfo
-struct PivotInfo* pivotInfoConstructor(long arrSize){
+struct PivotInfo* pivotInfoConstructor(long numOfWorkers){
     struct PivotInfo* temp = (struct PivotInfo*) malloc(sizeof(struct PivotInfo));
     
-    temp->samples = (int*) malloc(arrSize * sizeof(int));
+    temp->samples = (unsigned int*) malloc(numOfWorkers*numOfWorkers * sizeof(unsigned int));
+    temp->samplesAllocated = 1;
     temp->nextInsertPosition = 0;
+
+    temp->pivots = (unsigned int*) malloc((numOfWorkers - 1) * sizeof(unsigned int));
 
     return temp;
 }
 
 void pivotInfoDestructor(struct PivotInfo* info){
-    free(info->samples);
+    if(info->samplesAllocated == 1){ //Only free this if the samples is not freed beforehand
+        free(info->samples);
+    }
     free(info);
 }
 
-int pivotIndex(int i, int numOfWorkers){
+long pivotIndex(long i, int numOfWorkers){
     return (i+1)*numOfWorkers + numOfWorkers/2 - 1;
 }
