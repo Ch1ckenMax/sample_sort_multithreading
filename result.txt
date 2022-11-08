@@ -1,39 +1,210 @@
-1000000 1: Total elapsed time: 0.1182 s
-1000000 2: Total elapsed time: 0.1936 s
-1000000 3: Total elapsed time: 0.0966 s
-1000000 5: Total elapsed time: 0.1061 s
-1000000 9: Total elapsed time: 0.1190 s
-1000000 13: Total elapsed time: 0.1458 s
-1000000 16: Total elapsed time: 0.1687 s
-
-5000000 1: Total elapsed time: 0.6866 s
-5000000 2: Total elapsed time: 1.0363 s
-5000000 3: Total elapsed time: 0.6178 s
-5000000 5: Total elapsed time: 0.6356 s
-5000000 9: Total elapsed time: 0.6948 s
-5000000 13: Total elapsed time: 0.9032 s
-5000000 16: Total elapsed time: 0.9535 s
-
-10000000 1: Total elapsed time: 1.3864 s
-10000000 2: Total elapsed time: 2.2588 s
-10000000 3: Total elapsed time: 1.2943 s
-10000000 5: Total elapsed time: 1.4566 s
-10000000 9: Total elapsed time: 1.6431 s
-10000000 13: Total elapsed time: 1.8433 s
-10000000 16: Total elapsed time: 1.9553 s
-
-50000000 1: Total elapsed time: 7.7283 s
-50000000 2: Total elapsed time: 11.3479 s
-50000000 3: Total elapsed time: 7.1445 s
-50000000 5: Total elapsed time: 7.4297 s
-50000000 9: Total elapsed time: 8.4920 s
-50000000 13: Total elapsed time: 10.1070 s
-50000000 16: Total elapsed time: 10.0523 s
-
-100000000 1: Total elapsed time: 16.1569 s
-100000000 2: Total elapsed time: 23.3327 s
-100000000 3: Total elapsed time: 14.6038 s
-100000000 5: Total elapsed time: 15.5475 s
-100000000 9: Total elapsed time: 17.3051 s
-100000000 13: Total elapsed time: 20.2002 s
-100000000 16: Total elapsed time: 19.7506 s
+1000000 1: First : 177
+At 25%: 537045640
+At 50%: 1074175782
+At 75%: 1611071299
+Last  : 2147482304
+Total elapsed time: 0.1583 s
+1000000 2: First : 177
+At 25%: 537045640
+At 50%: 1074175782
+At 75%: 1611071299
+Last  : 2147482304
+Total elapsed time: 0.1451 s
+1000000 3: First : 177
+At 25%: 537045640
+At 50%: 1074175782
+At 75%: 1611071299
+Last  : 2147482304
+Total elapsed time: 0.1721 s
+1000000 5: First : 177
+At 25%: 537045640
+At 50%: 1074175782
+At 75%: 1611071299
+Last  : 2147482304
+Total elapsed time: 0.1504 s
+1000000 9: First : 177
+At 25%: 537045640
+At 50%: 1074175782
+At 75%: 1611071299
+Last  : 2147482304
+Total elapsed time: 0.1119 s
+1000000 13: First : 177
+At 25%: 537045640
+At 50%: 1074175782
+At 75%: 1611071299
+Last  : 2147482304
+Total elapsed time: 0.0813 s
+1000000 16: First : 177
+At 25%: 537045640
+At 50%: 1074175782
+At 75%: 1611071299
+Last  : 2147482304
+Total elapsed time: 0.0988 s
+5000000 1: First : 177
+At 25%: 536827318
+At 50%: 1073816277
+At 75%: 1610411882
+Last  : 2147482843
+Total elapsed time: 0.8515 s
+5000000 2: First : 177
+At 25%: 536827318
+At 50%: 1073816277
+At 75%: 1610411882
+Last  : 2147482843
+Total elapsed time: 1.0380 s
+5000000 3: First : 177
+At 25%: 536827318
+At 50%: 1073816277
+At 75%: 1610411882
+Last  : 2147482843
+Total elapsed time: 0.8911 s
+5000000 5: First : 177
+At 25%: 536827318
+At 50%: 1073816277
+At 75%: 1610411882
+Last  : 2147482843
+Total elapsed time: 0.7202 s
+5000000 9: First : 177
+At 25%: 536827318
+At 50%: 1073816277
+At 75%: 1610411882
+Last  : 2147482843
+Total elapsed time: 0.5508 s
+5000000 13: First : 177
+At 25%: 536827318
+At 50%: 1073816277
+At 75%: 1610411882
+Last  : 2147482843
+Total elapsed time: 0.4723 s
+5000000 16: First : 177
+At 25%: 536827318
+At 50%: 1073816277
+At 75%: 1610411882
+Last  : 2147482843
+Total elapsed time: 0.3781 s
+10000000 1: First : 94
+At 25%: 536912479
+At 50%: 1073491533
+At 75%: 1610450156
+Last  : 2147483426
+Total elapsed time: 1.7223 s
+10000000 2: First : 94
+At 25%: 536912479
+At 50%: 1073491533
+At 75%: 1610450156
+Last  : 2147483426
+Total elapsed time: 1.8743 s
+10000000 3: First : 94
+At 25%: 536912479
+At 50%: 1073491533
+At 75%: 1610450156
+Last  : 2147483426
+Total elapsed time: 1.7095 s
+10000000 5: First : 94
+At 25%: 536912479
+At 50%: 1073491533
+At 75%: 1610450156
+Last  : 2147483426
+Total elapsed time: 1.5703 s
+10000000 9: First : 94
+At 25%: 536912479
+At 50%: 1073491533
+At 75%: 1610450156
+Last  : 2147483426
+Total elapsed time: 1.1151 s
+10000000 13: First : 94
+At 25%: 536912479
+At 50%: 1073491533
+At 75%: 1610450156
+Last  : 2147483426
+Total elapsed time: 0.8736 s
+10000000 16: First : 94
+At 25%: 536912479
+At 50%: 1073491533
+At 75%: 1610450156
+Last  : 2147483426
+Total elapsed time: 0.8288 s
+50000000 1: First : 9
+At 25%: 536609332
+At 50%: 1073348248
+At 75%: 1610345381
+Last  : 2147483602
+Total elapsed time: 9.3054 s
+50000000 2: First : 9
+At 25%: 536609332
+At 50%: 1073348248
+At 75%: 1610345381
+Last  : 2147483602
+Total elapsed time: 9.5810 s
+50000000 3: First : 9
+At 25%: 536609332
+At 50%: 1073348248
+At 75%: 1610345381
+Last  : 2147483602
+Total elapsed time: 10.9652 s
+50000000 5: First : 9
+At 25%: 536609332
+At 50%: 1073348248
+At 75%: 1610345381
+Last  : 2147483602
+Total elapsed time: 8.1551 s
+50000000 9: First : 9
+At 25%: 536609332
+At 50%: 1073348248
+At 75%: 1610345381
+Last  : 2147483602
+Total elapsed time: 6.0432 s
+50000000 13: First : 9
+At 25%: 536609332
+At 50%: 1073348248
+At 75%: 1610345381
+Last  : 2147483602
+Total elapsed time: 4.6979 s
+50000000 16: First : 9
+At 25%: 536609332
+At 50%: 1073348248
+At 75%: 1610345381
+Last  : 2147483602
+Total elapsed time: 5.4959 s
+100000000 1: First : 2
+At 25%: 536690108
+At 50%: 1073542222
+At 75%: 1610448550
+Last  : 2147483639
+Total elapsed time: 19.1523 s
+100000000 2: First : 2
+At 25%: 536690108
+At 50%: 1073542222
+At 75%: 1610448550
+Last  : 2147483639
+Total elapsed time: 15.6102 s
+100000000 3: First : 2
+At 25%: 536690108
+At 50%: 1073542222
+At 75%: 1610448550
+Last  : 2147483639
+Total elapsed time: 18.4309 s
+100000000 5: First : 2
+At 25%: 536690108
+At 50%: 1073542222
+At 75%: 1610448550
+Last  : 2147483639
+Total elapsed time: 16.6195 s
+100000000 9: First : 2
+At 25%: 536690108
+At 50%: 1073542222
+At 75%: 1610448550
+Last  : 2147483639
+Total elapsed time: 16.1538 s
+100000000 13: First : 2
+At 25%: 536690108
+At 50%: 1073542222
+At 75%: 1610448550
+Last  : 2147483639
+Total elapsed time: 11.7662 s
+100000000 16: First : 2
+At 25%: 536690108
+At 50%: 1073542222
+At 75%: 1610448550
+Last  : 2147483639
+Total elapsed time: 11.0605 s

@@ -99,7 +99,7 @@ int main (int argc, char **argv)
 		tempEnd = tempStart + size/numOfWorkers;
 		if(i < size % numOfWorkers) //If the elements in the array is not divided evenly to the threads, add one more element to the subsequence that belongs to this thread if it is less than the remainder
 			tempEnd++;
-		threadInfo[i] = threadInfoConstructor(tempStart, tempEnd); //Initialize threadInfo
+		threadInfo[i] = threadInfoConstructor(tempStart, tempEnd, i); //Initialize threadInfo
 		tempStart = tempEnd;
 
 		//Create the threads
@@ -263,18 +263,42 @@ void* workerThread(void* tInfo){
 	pthread_cond_wait(&workerThreadWaitCond, &mainThreadWaitMutex); //Sleep and wait for main thread to say its good to go to phase 3
 	pthread_mutex_unlock(&mainThreadWaitMutex);
 
-	//Phase 3 (In my implementation for phase 3, I just find the number of elements for subsequence used in phase 4 instead of finding the index range of each partitions, then allocate heap memory to an array for storing the subsequence in phase 4)
-	int belongingThread = 0;
-	for(int i = info->start; i < info->end; i++){ //Trasverse through this thread's subSequence(retrieved from phase 1), and get the number of elements that belong to each thread's subSequence for phase 4
-		//this element and the remaining elements of the array belongs to the rest partitions(the array is sorted implies all remaining elements are larger)
-		//loop until the belongingThread is the largest partition
-		while((belongingThread != numOfWorkers - 1) && (intarr[i] > pivotInfo->pivots[belongingThread])){ //short-circuit, so there will not be segmentation fault 
-			belongingThread++;
+	int belongingThread;
+	//Phase 3 (In my implementation for phase 3, I just find the number of elements for subsequence used in phase 4 instead of finding the index range of each partitions
+	//then allocate heap memory to an array for storing the subsequence in phase 4)
+	
+	//Note:
+	//To avoid all worker threads "congesting" for locks when trasversing the start of intarr for a long time
+	//I divide the worker threads to two teams: one starts trasversing from start of the array, another team starts trasversing backward from the end of the array
+	//first team being that the worker thread id (info->id) is odd, second team being that its id is even, thats why we have an if-else below.
+
+	if(info->id % 2 == 0){
+		belongingThread = 0;
+		for(int i = info->start; i < info->end; i++){ //Trasverse through this thread's subSequence(retrieved from phase 1), and get the number of elements that belong to each thread's subSequence for phase 4
+			//this element and the remaining elements of the array belongs to the rest partitions(the array is sorted implies all remaining elements are larger)
+			//loop until the belongingThread is the largest partition
+			while((belongingThread != numOfWorkers - 1) && (intarr[i] > pivotInfo->pivots[belongingThread])) //short-circuit, so there will not be segmentation fault 
+				belongingThread++;
+			
+			pthread_mutex_lock(&(threadInfo[belongingThread]->mLock));
+			(threadInfo[belongingThread]->mergedSubSequenceLength)++;
+			pthread_mutex_unlock(&(threadInfo[belongingThread]->mLock));
+			
 		}
-		pthread_mutex_lock(&workerLock);
-		(threadInfo[belongingThread]->mergedSubSequenceLength)++;
-		pthread_mutex_unlock(&workerLock);
 	}
+	else{
+		belongingThread = numOfWorkers - 1;
+		for(int i = info->end - 1; i >= info->start; i--){
+			while((belongingThread != 0) && (intarr[i] <= pivotInfo->pivots[belongingThread - 1])){ //short-circuit, so there will not be segmentation fault 
+				belongingThread--;
+			}
+
+			pthread_mutex_lock(&(threadInfo[belongingThread]->mLock));
+			(threadInfo[belongingThread]->mergedSubSequenceLength)++;
+			pthread_mutex_unlock(&(threadInfo[belongingThread]->mLock));
+		}
+	}
+	
 
 	//Signals that this worker thread has finished its FIRST part in phase 3. Tells the main thread about it and waits for main thread to tell this worker thread that it can proceed to second part of phase 3
 	pthread_mutex_lock(&mainThreadWaitMutex);
@@ -294,15 +318,32 @@ void* workerThread(void* tInfo){
 	pthread_mutex_unlock(&mainThreadWaitMutex);
 
 	//first part in phase 4: Put the partitions to the correct subSequence
-	belongingThread = 0;
-	for(int i = info->start; i < info->end; i++){
-		while((belongingThread != numOfWorkers - 1) && (intarr[i] > pivotInfo->pivots[belongingThread])){ //short-circuit, so there will not be segmentation fault 
-			belongingThread++;
+
+	//Note: I used the same strategy as the first part of phase 3 to avoid "congestion" from waiting locks at the start of the intarr
+
+	if(info->id % 2 == 0){
+		belongingThread = 0;
+		for(int i = info->start; i < info->end; i++){
+			while((belongingThread != numOfWorkers - 1) && (intarr[i] > pivotInfo->pivots[belongingThread])){ //short-circuit, so there will not be segmentation fault 
+				belongingThread++;
+			}
+			pthread_mutex_lock(&(threadInfo[belongingThread]->mLock));
+			threadInfo[belongingThread]->mergedSubSequence[threadInfo[belongingThread]->nextInsertPosition] = intarr[i];
+			threadInfo[belongingThread]->nextInsertPosition++;
+			pthread_mutex_unlock(&(threadInfo[belongingThread]->mLock));
 		}
-		pthread_mutex_lock(&workerLock);
-		threadInfo[belongingThread]->mergedSubSequence[threadInfo[belongingThread]->nextInsertPosition] = intarr[i];
-		threadInfo[belongingThread]->nextInsertPosition++;
-		pthread_mutex_unlock(&workerLock);
+	}
+	else{
+		belongingThread = numOfWorkers - 1;
+		for(int i = info->end - 1; i >= info->start; i--){
+			while((belongingThread != 0) && (intarr[i] <= pivotInfo->pivots[belongingThread - 1])){ //short-circuit, so there will not be segmentation fault 
+				belongingThread--;
+			}
+			pthread_mutex_lock(&(threadInfo[belongingThread]->mLock));
+			threadInfo[belongingThread]->mergedSubSequence[threadInfo[belongingThread]->nextInsertPosition] = intarr[i];
+			threadInfo[belongingThread]->nextInsertPosition++;
+			pthread_mutex_unlock(&(threadInfo[belongingThread]->mLock));
+		}
 	}
 
 	pthread_mutex_lock(&mainThreadWaitMutex);
